@@ -15,18 +15,18 @@ interface CardProps{
 
 const Card:React.FC<CardProps>=({
 url='',
-width=200,
-height=200,
-borderRadius=50,
+width=125,
+height=125,
+borderRadius=30,
 backgroundColor="red",
 label="5",
 isLookUp=false,
 onClick
 })=>{
     const [opacity,setOpacity]=useState(1);
-
     return(
         <Box
+            display={'flex'}
             width={width}
             height={height}
             borderRadius={borderRadius}
@@ -39,7 +39,7 @@ onClick
             opacity={opacity}
         >
             <Heading>
-                {isLookUp ? label : 'Estoy abajo'}
+                {isLookUp ? label : 'Vista Atras'}
             </Heading>
         </Box>
     );

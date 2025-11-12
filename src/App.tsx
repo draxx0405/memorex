@@ -1,46 +1,48 @@
 import { useEffect, useState, } from 'react'
-import { VStack } from '@chakra-ui/react'
+import { SimpleGrid, VStack } from '@chakra-ui/react'
 import Card from './components/Card';
 import TopBar from './components/TopBar'
-import ButtonP from './components/Button';
-import { MemoryRouter } from 'react-router-dom';
 
 interface MemoramaItems {
   url?: string,
   isLookUp: boolean,
   label?: string
+  isSelected?: boolean
 }
 
 function App() {
-  const [progress, setProgress] = useState(100);
+  const [progress, setProgress] = useState(0);
   const [time, setTime] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [flippedPairs, setFlippedPairs] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const [memoramaItems, setMemoramaITems] = useState<MemoramaItems[]>([
-    { url: '', isLookUp: false, label: 'A' },
-    { url: '', isLookUp: false, label: 'A' },
-    { url: '', isLookUp: false, label: 'B' },
-    { url: '', isLookUp: false, label: 'B' },
-    { url: '', isLookUp: false, label: 'C' },
-    { url: '', isLookUp: false, label: 'C' },
-    { url: '', isLookUp: false, label: 'D' },
-    { url: '', isLookUp: false, label: 'D' },
-    { url: '', isLookUp: false, label: 'E' },
-    { url: '', isLookUp: false, label: 'E' },
-    { url: '', isLookUp: false, label: 'F' },
-    { url: '', isLookUp: false, label: 'F' },
-    { url: '', isLookUp: false, label: 'G' },
-    { url: '', isLookUp: false, label: 'G' },
-    { url: '', isLookUp: false, label: 'H' },
-    { url: '', isLookUp: false, label: 'H' },
-    { url: '', isLookUp: false, label: 'I' },
-    { url: '', isLookUp: false, label: 'I' },
-    { url: '', isLookUp: false, label: 'J' },
-    { url: '', isLookUp: false, label: 'J' },
+  const [isNewGame, setIsNewGame] = useState(false);
+  const [flipedCards, setFlipedCards] = useState(0);
+  const [memoramaItems, setMemoramaItems] = useState<MemoramaItems[]>([
+    { url: '', isLookUp: false, label: 'A', isSelected: false },
+    { url: '', isLookUp: false, label: 'A', isSelected: false },
+    { url: '', isLookUp: false, label: 'B', isSelected: false },
+    { url: '', isLookUp: false, label: 'B', isSelected: false },
+    { url: '', isLookUp: false, label: 'C', isSelected: false },
+    { url: '', isLookUp: false, label: 'C', isSelected: false },
+    { url: '', isLookUp: false, label: 'D', isSelected: false },
+    { url: '', isLookUp: false, label: 'D', isSelected: false },
+    { url: '', isLookUp: false, label: 'E', isSelected: false },
+    { url: '', isLookUp: false, label: 'E', isSelected: false },
+    { url: '', isLookUp: false, label: 'F', isSelected: false },
+    { url: '', isLookUp: false, label: 'F', isSelected: false },
+    { url: '', isLookUp: false, label: 'G', isSelected: false },
+    { url: '', isLookUp: false, label: 'G', isSelected: false },
+    { url: '', isLookUp: false, label: 'H', isSelected: false },
+    { url: '', isLookUp: false, label: 'H', isSelected: false },
+    { url: '', isLookUp: false, label: 'I', isSelected: false },
+    { url: '', isLookUp: false, label: 'I', isSelected: false },
+    { url: '', isLookUp: false, label: 'J', isSelected: false },
+    { url: '', isLookUp: false, label: 'J', isSelected: false },
   ]);
 
+  //Metodo creado por chatgpt para el ordenamiento aletorio de elementos del arreglo 
+  //El metodo shuffle es conocido por hacer un ordenamiento aleatorio en los elementos de un arreglo o coleccion 
   const shuffleArray = <T,>(array: T[]): T[] => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -51,9 +53,16 @@ function App() {
   };
 
   useEffect(() => {
-    const newList = shuffleArray(memoramaItems);
-    setMemoramaITems(newList)
-  }, []);
+    if (!isNewGame) {
+      const newList = shuffleArray(memoramaItems);
+      setMemoramaItems(newList);
+      setAttempts(0);
+      setFlipedCards(0);
+      setProgress(0);
+      setTime(0);
+      setFlippedPairs(0);
+    }
+  }, [isNewGame]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -61,31 +70,63 @@ function App() {
     }, 1000);
     return () => clearInterval(timer);
   }, [isPlaying]);
+  useEffect(() => {
+    if (flipedCards === 2) {
+      console.log('Dentro del useEffect');
+      const itemSelected = memoramaItems.filter((item) => item.isSelected === true);
+      const isPair = itemSelected[0].label === itemSelected[1].label;
+      setAttempts((prev) => prev + 1);
+      setFlipedCards(0);
+      let newList;
+      if (isPair) {
+        setFlippedPairs((prev) => prev + 1);
+        setProgress((flippedPairs / 10) * 100);
+        newList = memoramaItems.map((item) => {
+          return item.isSelected ? { ...item, isLookUp: true } : item
+        });
+      } else {
+        newList = memoramaItems.map((item) => {
+          return item.isSelected ? { ...item, isLookUp: false, isSelected: false } : item
+        });
+      }
+      const timeout = setTimeout(() => {
+        setMemoramaItems(newList);
+      }, 100);
+      clearTimeout(timeout);
+    }
+  }, [memoramaItems]);
 
-  const handleCard = () => {
-
+  const handleCard = async (indexp: number) => {
+    const newList = memoramaItems.map((item, index) => {
+      if (index == indexp) {
+        const flipedCards = memoramaItems.filter((it) => it.isSelected === true).length;
+        setFlipedCards(flipedCards + 1);
+        console.log(flipedCards + 1);
+        if (flipedCards < 2) {
+          return { ...item, isLookUp: !item.isLookUp, isSelected: true };
+        }
+      }
+      return item;
+    })
+    setMemoramaItems(newList);
   };
+
   return (
     <VStack
       width={'100vw'}
       height={'100vh'}
     >
       <TopBar backgroundColor='#120D61' progress={progress} time={time} attempts={attempts} flippedPairs={flippedPairs} />
-      <ButtonP onClick={() => { setIsPlaying(!isPlaying) }} />
-
-      <VStack>
-        {memoramaItems.map((item, index) => {
-          let items=0;
-          return (
-            <Card
-              key={index}
-              label={item.label}
-              isLookUp={item.isLookUp}
-            />
-          );
-        })}
-
-      </VStack>
+      <SimpleGrid columns={5} spacing={4}>
+        {memoramaItems.map((item, index) => (
+          <Card
+            key={index}
+            label={item.label}
+            isLookUp={item.isLookUp}
+            onClick={() => handleCard(index)}
+          />
+        ))}
+      </SimpleGrid>
     </VStack>
   )
 }
