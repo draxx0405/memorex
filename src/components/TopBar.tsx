@@ -1,6 +1,7 @@
 import { HStack,Heading,VStack,Progress } from "@chakra-ui/react";
 import React from "react";
 import ButtonP from './Button';
+import { useNavigate} from 'react-router-dom';
 
 interface TopBarProps{
     time:number,
@@ -18,6 +19,7 @@ progress,
 attempts,
 flippedPairs
 })=>{
+    const navigate = useNavigate();
 
     return(
         <HStack
@@ -27,7 +29,7 @@ flippedPairs
             justifyContent={'space-around'}
             alignItems={'center'}
         >
-            <ButtonP text="Regresar" backgroundColor="#36307C"/>
+            <ButtonP text="Regresar" backgroundColor="#36307C" onClick={()=>navigate('/')}/>
 
             <VStack>
                 <Heading color={'white'} size={'md'}>Tiempo</Heading>
