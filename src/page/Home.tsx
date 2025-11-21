@@ -37,7 +37,7 @@ function App() {
 
       <CustomModal
         isOpen={playGameModalVisible}
-        confirmText='Cerrar'
+        confirmText='Continuar'
         onConfirm={() => navigator('/Game')}
         onClose={() => setPlayGameModalVisible(false)}
         content={'1- Elige un modo de juego.' + '\n' + '2- Voltea 2 cartas por turno' + '\n' + '3- Si coinciden, ganas el punto y sigues.' + '\n' + ' 4- Si no coinciden, se voltean de nuevo.' + '\n' + '5- Encuentra todas las parejas para ganar.'}

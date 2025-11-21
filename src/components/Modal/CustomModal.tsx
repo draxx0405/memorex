@@ -32,7 +32,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
   onConfirm,
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      closeOnOverlayClick={false}
+      isCentered
+    >
       <ModalOverlay />
 
       {/* Modal con animación de scale */}

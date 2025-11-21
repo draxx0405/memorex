@@ -23,7 +23,6 @@ const ButtonP: React.FC<ButtonProps> = ({
     fontFamily = '',
     onClick
 }) => {
-
     return (
         <Button
             backgroundColor={backgroundColor}

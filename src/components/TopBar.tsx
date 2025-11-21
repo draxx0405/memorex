@@ -7,8 +7,8 @@ interface TopBarProps{
     time:number,
     backgroundColor:string,
     progress:number,
-    attempts:number,
-    flippedPairs:number
+    player?:string,
+    flippedPairs?:number
 }
 
 
@@ -16,7 +16,7 @@ const TopBar:React.FC<TopBarProps>=({
 time=160,
 backgroundColor,
 progress,
-attempts,
+player,
 flippedPairs
 })=>{
     const navigate = useNavigate();
@@ -36,8 +36,8 @@ flippedPairs
                 <Heading color={'white'} size={'md'}>{time}</Heading>
             </VStack>
             <VStack>
-                <Heading color={'white'} size={'md'}>Intentos</Heading>
-                <Heading color={'white'} size={'md'}>{attempts}</Heading>
+                <Heading color={'white'} size={'md'}>Turno</Heading>
+                <Heading color={'white'} size={'md'}>{player}</Heading>
             </VStack>
             <VStack>
                 <Heading color={'white'} size={'md'}>Pares encontrados</Heading>
